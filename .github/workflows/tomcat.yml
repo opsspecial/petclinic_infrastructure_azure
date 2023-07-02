@@ -35,9 +35,6 @@ jobs:
         uses: actions/checkout@v3  
       - name: Setup environment
         run: | 
-          echo ${{ secrets.SSH_PRIVATE_KEY }} | base64 -d  > $HOME/id_az
-          chmod 400 $HOME/id_az
-          cat  $HOME/id_az
           echo "[webservers]" > $HOME/hosts
           echo $vm_ips >>  $HOME/hosts
           echo "PRIVATE_KEY_PATH=$HOME/id_az" >> $GITHUB_ENV    
