@@ -1,0 +1,48 @@
+name: "Configure Web Servers"
+on:
+  workflow_dispatch:
+    
+jobs:
+  setup:
+    runs-on: self-hosted
+    
+    env:
+      RESOURCE_GROUP: "petclinic_rg"
+      VM_TAG: "web"
+    steps:
+      - name: Checkout the code 
+        uses: actions/checkout@v3  
+      - name: setup Azure CLI  
+        uses: azure/CLI@v1 
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+      - name: Prepare Host file
+        id: prepare-hosts
+        run: |
+          vm_ips=$(az vm list --resource-group $RESOURCE_GROUP --show-details \
+          --query "[?contains(name, '$VM_TAG')].[privateIps]" -otsv)
+          echo "vm_ips=$vm_ips" >> GITHUB_OUTPUT
+    outputs:
+      vm_ips: ${{ steps.prepare-hosts.outputs.vm_ips }}
+  configure:
+    runs-on: self-hosted
+    needs: setup
+    env:
+      vm_ips: ${{ needs.setup.outputs.vm_ips }}
+    steps:
+      - name: Checkout the code 
+        uses: actions/checkout@v3  
+      - name: Setup environment
+        run: | 
+          echo ${{ secrets.SSH_PRIVATE_KEY }} | base64 -d  > $HOME/id_az
+          chmod 400 $HOME/id_az
+          cat  $HOME/id_az
+          echo "[webservers]" > $HOME/hosts
+          echo $vm_ips >>  $HOME/hosts
+          echo "PRIVATE_KEY_PATH=$HOME/id_az" >> $GITHUB_ENV    
+      - name: Run ansible playbook
+        run: |
+          cd Ansible
+          anisble-playbook -i $HOME/hosts tomcat_installation.yml --private-key $PRIVATE_KEY_PATH
+          
