@@ -41,5 +41,5 @@ jobs:
       - name: Run ansible playbook
         run: |
           cd Ansible
-          ansible-playbook -i $HOME/hosts tomcat_installation.yml --private-key $PRIVATE_KEY_PATH
+          ansible-playbook -i $HOME/hosts tomcat_playbook.yaml --private-key $PRIVATE_KEY_PATH
           
