@@ -40,7 +40,8 @@ jobs:
           fi 
       - name: Create Public Key file
         run: | 
-          echo ${{ secrets.SSH_PUBLIC_KEY }} > /tmp/id_az.pub
+          echo ${{ vars.SSH_PUBLIC_KEY }} > /tmp/id_az.pub
+          cat /tmp/id_az.pub
       - name: Initialize Terraform
         run: |
           terraform -chdir=azure_infra init
