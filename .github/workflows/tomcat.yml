@@ -12,17 +12,15 @@ jobs:
     steps:
       - name: Checkout the code 
         uses: actions/checkout@v3  
-      - name: setup Azure CLI  
-        uses: azure/CLI@v1 
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-    
       - name: Prepare Host file
         id: prepare-hosts
-        run: |
-          vm_ips=$(az vm list --resource-group $RESOURCE_GROUP --show-details \
-          --query "[?contains(name, '$VM_TAG')].[privateIps]" -otsv)
-          echo "vm_ips=$vm_ips" >> GITHUB_OUTPUT
+        uses: azure/CLI@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          inlineScript: |
+            vm_ips=$(az vm list --resource-group $RESOURCE_GROUP --show-details \
+            --query "[?contains(name, '$VM_TAG')].[privateIps]" -otsv)
+            echo "vm_ips=$vm_ips" >> GITHUB_OUTPUT
     outputs:
       vm_ips: ${{ steps.prepare-hosts.outputs.vm_ips }}
   configure:

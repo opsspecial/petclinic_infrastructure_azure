@@ -40,9 +40,9 @@ tar xzf ./actions-runner-linux-x64-2.305.0.tar.gz
 # Install maven 3.9.3
 cd $HOME
 curl -LO https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.tar.gz
-tar xvf apache-maven-3.9.3-bin.tar apache-maven-3.9.3/
 gunzip apache-maven-3.9.3-bin.tar.gz 
+tar xvf apache-maven-3.9.3-bin.tar
 mv apache-maven-3.9.3 maven
-rm -rf /usr/bin/mvn
+sudo rm -rf /usr/bin/mvn
 sudo ln -s /home/azadmin/maven/bin/mvn /usr/bin/mvn
-echo "export PATH=$PATH:/hom/azadmin/maven/bin" >> /etc/profile
+export PATH=$PATH:/home/azadmin/maven/bin" >> /etc/profile
