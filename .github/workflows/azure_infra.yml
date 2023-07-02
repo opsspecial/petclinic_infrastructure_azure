@@ -54,13 +54,11 @@ jobs:
         run: |
           echo "Terraform is applying the config"
           terraform -chdir=azure_infra apply -auto-approve
-          tf_output=$(terraform -chdir=azure_infra output 
+          tf_output=$(terraform -chdir=azure_infra output)
           echo "tf_output=$tf_output" >> $GITHUB_OUTPUT    
       - name: Terraform Destroy
         if: ${{ env.Action == 'Destroy' }}
         run: |
           echo "Terraform is destroying the config"
           terraform -chdir=azure_infra destroy -auto-approve
-    outputs:
-      web_ips: ${{ steps.apply.outputs.web_ips }}
   
