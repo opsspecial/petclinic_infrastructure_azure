@@ -7,7 +7,7 @@ jobs:
     runs-on: self-hosted
     
     env:
-      RESOURCE_GROUP: "petclinic_rg"
+      RESOURCE_GROUP: "petclinic-rg"
       VM_TAG: "web"
     steps:
       - name: Checkout the code 
