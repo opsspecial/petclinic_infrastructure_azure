@@ -18,28 +18,13 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Prepare Host file
         id: prepare-hosts
-        run:
-          |
-          vm_ips=$(az vm list --resource-group $RESOURCE_GROUP --show-details \
-          --query "[?contains(name, '$VM_TAG')].[privateIps]" -otsv)
-          echo "vm_ips=$vm_ips" >> GITHUB_OUTPUT
-    outputs:
-      vm_ips: ${{ steps.prepare-hosts.outputs.vm_ips }}
-  configure:
-    runs-on: self-hosted
-    needs: setup
-    env:
-      vm_ips: ${{ needs.setup.outputs.vm_ips }}
-    steps:
-      - name: Checkout the code 
-        uses: actions/checkout@v3  
-      - name: Setup environment
-        run: | 
-          echo "[webservers]" > $HOME/hosts
-          echo $vm_ips >>  $HOME/hosts
-          echo "PRIVATE_KEY_PATH=$HOME/id_az" >> $GITHUB_ENV    
+        run: |
+          echo '[webservers]' > $HOME/hosts
+          az vm list --resource-group $RESOURCE_GROUP --show-details \
+          --query "[?contains(name, '$VM_TAG')].[privateIps]" -otsv >> $HOME/hosts
+          cat $HOME/hosts
       - name: Run ansible playbook
         run: |
           cd Ansible
-          ansible-playbook -i $HOME/hosts tomcat_playbook.yaml --private-key $PRIVATE_KEY_PATH
+          ansible-playbook -i $HOME/hosts tomcat_playbook.yaml --private-key $HOME/id_az
           
