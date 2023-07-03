@@ -8,12 +8,20 @@
   remote_user: '{{ user }}'
 
   tasks:
+  - name: Retrieve OS information
+    hosts: your_host
+    gather_facts: true
+    tasks:
+      - name: Store OS name as a variable
+        set_fact:
+          os_name: "{{ ansible_distribution }}"
+
   - name: Update and upgrade apt packages
     apt:
       upgrade: yes
       update_cache: yes
       cache_valid_time: 86400 #One day 
-    when: anisble_facts['os_family'] == "Debian"
+    when: os_name == "Debian"
 
   - name: install dependencies 
     apt:
@@ -24,7 +32,7 @@
       - unzip
       - tree
       - python3-pip
-    when: anisble_facts['os_family'] == "Debian"
+    when: os_name == "Debian"
 
   - name: install dependencies 
     yum:
@@ -35,7 +43,7 @@
       - unzip
       - tree
       - python3-pip
-    when: anisble_facts['os_family'] == "rhel"
+    when: os_name == 'RedHat' or os_name == 'CentOS'
 
   - name: add tomcat group
     group:
