@@ -37,6 +37,8 @@ curl -o actions-runner-linux-x64-2.305.0.tar.gz -L https://github.com/actions/ru
 # Extract the installer
 tar xzf ./actions-runner-linux-x64-2.305.0.tar.gz
 
+sudo chown azadmin:azadmin actions-runner/ -R
+
 
 # Install maven 3.9.3
 cd $HOMEDIR
