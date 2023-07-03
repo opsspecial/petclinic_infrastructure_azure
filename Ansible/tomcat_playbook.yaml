@@ -8,14 +8,11 @@
   remote_user: '{{ user }}'
 
   tasks:
-  - name: Retrieve OS information
-    hosts: your_host
-    gather_facts: true
-    tasks:
-      - name: Store OS name as a variable
-        set_fact:
-          os_name: "{{ ansible_distribution }}"
 
+  - name: Store OS name as a variable
+    set_fact:
+      os_name: "{{ ansible_distribution }}"
+       
   - name: Update and upgrade apt packages
     apt:
       upgrade: yes
